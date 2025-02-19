@@ -14,7 +14,7 @@ requires = ["setuptools>=60", "setuptools-scm>=8.0"]
 
 [project]
 description = "A package to run AI weather models."
-name = "ai-models"
+name = "ai-models-gfs"
 
 dynamic = ["version"]
 license = { file = "LICENSE" }
@@ -22,6 +22,10 @@ requires-python = ">=3.9"
 
 authors = [
     { name = "European Centre for Medium-Range Weather Forecasts (ECMWF)", email = "software.support@ecmwf.int" },
+]
+
+maintainers = [
+    { name = "Jacob Radford", email = "jacob.t.radford@gmail.com" }
 ]
 
 keywords = ["tools", "ai"]
@@ -58,23 +62,26 @@ dependencies = [
 
 
 [project.urls]
-Homepage = "https://github.com/ecmwf-lab/ai-models/"
-Repository = "https://github.com/ecmwf-lab/ai-models/"
-Issues = "https://github.com/ecmwf-lab/ai-models/issues"
+Homepage = "https://github.com/ecmwf-lab/ai-models"
+Repository = "https://github.com/jacob-radford/ai-models-gfs"
+Issues = "https://github.com/jacob-radford/ai-models-gfs/issues"
 
 [project.scripts]
-ai-models = "ai_models.__main__:main"
+ai-models-gfs = "ai_models_gfs.__main__:main"
 
 [tool.setuptools_scm]
-version_file = "src/ai_models/_version.py"
+version_file = "src/ai_models_gfs/_version.py"
 
-[project.entry-points."ai_models.input"]
-file = "ai_models.inputs.file:FileInput"
-mars = "ai_models.inputs.mars:MarsInput"
-cds = "ai_models.inputs.cds:CdsInput"
-ecmwf-open-data = "ai_models.inputs.opendata:OpenDataInput"
-opendata = "ai_models.inputs.opendata:OpenDataInput"
+[project.entry-points."ai_models_gfs.input"]
+file = "ai_models_gfs.inputs.file:FileInput"
+mars = "ai_models_gfs.inputs.mars:MarsInput"
+cds = "ai_models_gfs.inputs.cds:CdsInput"
+gfs = "ai_models_gfs.inputs.gfs:GfsInput"
+gefs = "ai_models_gfs.inputs.gfs:GefsInput"
+gdas = "ai_models_gfs.inputs.gfs:GdasInput"
+ecmwf-open-data = "ai_models_gfs.inputs.opendata:OpenDataInput"
+opendata = "ai_models_gfs.inputs.opendata:OpenDataInput"
 
-[project.entry-points."ai_models.output"]
-file = "ai_models.outputs:FileOutput"
-none = "ai_models.outputs:NoneOutput"
+[project.entry-points."ai_models_gfs.output"]
+file = "ai_models_gfs.outputs:FileOutput"
+none = "ai_models_gfs.outputs:NoneOutput"

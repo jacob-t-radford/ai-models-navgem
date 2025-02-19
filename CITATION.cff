@@ -2,10 +2,10 @@
 # Visit https://bit.ly/cffinit to generate yours today!
 
 cff-version: 1.2.0
-title: ai-models
 message: >-
-  If you use this software, please cite it using the
-  metadata from this file.
+  If you use this software, please cite 
+  the following two sources.
+title: ai-models
 type: software
 authors:
   - given-names: Baudouin
@@ -31,6 +31,22 @@ repository-code: 'https://github.com/ecmwf-lab/ai-models'
 abstract: >-
   ai-models is used to run AI-based weather forecasting
   models. These models need to be installed independently.
+keywords:
+  - ai
+  - weather forecasting
+license: Apache-2.0
+
+title: ai-models-gfs
+type: software
+authors:
+  - given-names: Jacob	
+    family-names: Radford
+    affiliation: CIRA
+repository-code: 'https://github.com/jacob-t-radford/ai-models-gfs'
+abstract: >-
+  ai-models-gfs is used to run AI-based weather forecasting
+  models with GFS family initial conditions.
+  These models need to be installed independently.
 keywords:
   - ai
   - weather forecasting

@@ -128,7 +128,7 @@ class OpenDataInput(RequestBasedInput):
                 " not available in ECMWF open data, using constants.grib2 instead"
             )
 
-        cachedir = os.path.expanduser("~/.cache/ai-models")
+        cachedir = os.path.expanduser("~/.cache/ai-models-gfs")
         constants_url = CONSTANTS_URL.format(resol=request["resol"])
         basename = os.path.basename(constants_url)
 
@@ -247,3 +247,4 @@ class OpenDataInput(RequestBasedInput):
             if len(extra) == 1:
                 raise ValueError(f"Unexpected {what} parameter '{extra[0]}' from ECMWF open data")
             raise ValueError(f"Unexpected {what} parameters {extra} from ECMWF open data")
+
