@@ -233,12 +233,6 @@ def _main(argv):
     )
 
     parser.add_argument(
-        "--netcdf",
-        help="Convert grib to netcdf",
-        action="store_true"
-    )
-
-    parser.add_argument(
         "--version",
         action="store_true",
         help="Print ai-models-gfs version and exit",
