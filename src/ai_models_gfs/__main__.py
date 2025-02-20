@@ -10,9 +10,7 @@ import logging
 import os
 import shlex
 import sys
-
 import earthkit.data as ekd
-
 from .inputs import available_inputs
 from .model import Timer
 from .model import available_models
@@ -235,6 +233,12 @@ def _main(argv):
     )
 
     parser.add_argument(
+        "--netcdf",
+        help="Convert grib to netcdf",
+        action="store_true"
+    )
+
+    parser.add_argument(
         "--version",
         action="store_true",
         help="Print ai-models-gfs version and exit",
@@ -315,7 +319,6 @@ def _main(argv):
 
     run(vars(args), unknownargs)
 
-
 def run(cfg: dict, model_args: list):
     if cfg["remote_execution"]:
         from .remote import RemoteModel
@@ -351,7 +354,7 @@ def run(cfg: dict, model_args: list):
             shlex.join([sys.argv[0], "--download-assets"] + sys.argv[1:]),
         )
         sys.exit(1)
-
+        
     model.finalise()
 
     if cfg["dump_provenance"]:

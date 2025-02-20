@@ -12,6 +12,7 @@ import logging
 import os
 import sys
 import time
+import urllib.request
 from collections import defaultdict
 from functools import cached_property
 
@@ -171,8 +172,17 @@ class Model:
             if not os.path.exists(asset):
                 os.makedirs(os.path.dirname(asset), exist_ok=True)
                 LOG.info("Downloading %s", asset)
-                download(self.download_url.format(file=file), asset + ".download")
-                os.rename(asset + ".download", asset)
+                
+                download_url = self.download_url.format(file=file)
+                temp_download = asset + ".download"
+                
+                if "aurora" not in self.model:
+                    # Try using `multiurl` download first
+                    download(download_url, temp_download)
+                else:
+                    urllib.request.urlretrieve(download_url, temp_download)
+                
+                os.rename(temp_download, asset)
 
     @property
     def asset_files(self, **kwargs):

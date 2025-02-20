@@ -15,8 +15,7 @@ requires = ["setuptools>=60", "setuptools-scm>=8.0"]
 [project]
 description = "A package to run AI weather models."
 name = "ai-models-gfs"
-
-dynamic = ["version"]
+version = "0.0.13"
 license = { file = "LICENSE" }
 requires-python = ">=3.9"
 
@@ -68,9 +67,6 @@ Issues = "https://github.com/jacob-radford/ai-models-gfs/issues"
 
 [project.scripts]
 ai-models-gfs = "ai_models_gfs.__main__:main"
-
-[tool.setuptools_scm]
-version_file = "src/ai_models_gfs/_version.py"
 
 [project.entry-points."ai_models_gfs.input"]
 file = "ai_models_gfs.inputs.file:FileInput"
