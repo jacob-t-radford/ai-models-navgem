@@ -534,7 +534,10 @@ class Model:
 
     @cached_property
     def start_datetime(self):
-        return self.all_fields.order_by(valid_datetime="ascending")[-1].datetime()["valid_time"]
+        for field in self.all_fields.order_by(valid_datetime="ascending"):
+            if field['param']!='tp':
+                start_datetime = field.datetime()["valid_time"]
+        return start_datetime
 
     @property
     def constant_fields(self):
