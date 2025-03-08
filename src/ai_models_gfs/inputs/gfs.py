@@ -22,7 +22,7 @@ LOG = logging.getLogger(__name__)
 class GfsInput(RequestBasedInput):
     WHERE = "GFS"
     def pl_load_source(self, **kwargs):
-
+        interp = bool(int(kwargs['grid'][0]))
         # Use a named temp file to ensure it persists
         temp_path = os.path.join(tempfile.gettempdir(), "sample_pres.grib")
         sample_url = "https://noaa-oar-mlwp-data.s3.amazonaws.com/sample_files/sample_pres.grib"
@@ -65,7 +65,8 @@ class GfsInput(RequestBasedInput):
             parameter_name = grib_message['shortName']
             pressure_level = grib_message['level']
             template = grib_message
-
+            if interp:
+                template = set_eccodes(template)
             # Set the date and time for the GRIB template
             eccodes.codes_set(template.handle._handle, "date", int(kwargs['date']))
             eccodes.codes_set(
@@ -84,7 +85,14 @@ class GfsInput(RequestBasedInput):
                     param=parameter_name, level=pressure_level
                 )
                 data_array = parameter_data[0].to_numpy()
-
+            if interp:
+                data_array = interpolate(
+                                        data_array,
+                                        np.arange(90,-90.25,-0.25),
+                                        np.arange(0,360,0.25),
+                                        np.arange(90,-91,-1),
+                                        np.arange(0,360,1)
+                                        )
             # Write the data to the formatted GRIB file using the template
             formatted_pressure_output.write(data_array, template=template)
 
@@ -93,6 +101,7 @@ class GfsInput(RequestBasedInput):
         return formatted_pressure_grib
 
     def sfc_load_source(self, **kwargs):
+        interp = bool(int(kwargs['grid'][0]))
 
         # Use a named temp file to ensure it persists
         temp_path = os.path.join(tempfile.gettempdir(), "sample_sfc.grib")
@@ -137,7 +146,8 @@ class GfsInput(RequestBasedInput):
             parameter_name = grib_message['shortName']
             surface_level = grib_message['level']
             template = grib_message
-
+            if interp:
+                template = set_eccodes(template)
             # Set the date and time for the GRIB template
             eccodes.codes_set(template.handle._handle, "date", int(kwargs['date']))
             eccodes.codes_set(
@@ -161,7 +171,14 @@ class GfsInput(RequestBasedInput):
                 # Select other parameters' data
                 parameter_data = gfs_surface_data.sel(param=parameter_name)
                 data_array = parameter_data[0].to_numpy()
-
+            if interp:
+                data_array = interpolate(
+                                        data_array,
+                                        np.arange(90,-90.25,-0.25),
+                                        np.arange(0,360,0.25),
+                                        np.arange(90,-91,-1),
+                                        np.arange(0,360,1)
+                                        )
             # Write the data to the formatted GRIB file using the template
             formatted_surface_output.write(data_array, template=template)
 
@@ -180,6 +197,7 @@ class GefsInput(RequestBasedInput):
         self.kwargs = kwargs
 
     def pl_load_source(self, **kwargs):
+        interp = bool(int(kwargs['grid'][0]))
         member = str(self.kwargs['member'][0]).zfill(2)
         if member=='00':
             member = 'c00'
@@ -239,7 +257,8 @@ class GefsInput(RequestBasedInput):
             parameter_name = grib_message['shortName']
             pressure_level = grib_message['level']
             template = grib_message
-
+            if interp:
+                template = set_eccodes(template)
             # Set the date and time for the GRIB template
             eccodes.codes_set(template.handle._handle, "date", int(kwargs['date']))
             eccodes.codes_set(
@@ -259,7 +278,22 @@ class GefsInput(RequestBasedInput):
                 )
                 data_array = parameter_data[0].to_numpy()
 
-            data_array = gefs_interpolate(data_array)
+            if interp:
+                data_array = interpolate(
+                                        data_array,
+                                        np.arange(90,-90.50,-0.50),
+                                        np.arange(0,360,0.50),
+                                        np.arange(90,-91,-1),
+                                        np.arange(0,360,1)
+                                        )
+            else:
+                data_array = interpolate(
+                                        data_array,
+                                        np.arange(90,-90.50,-0.50),
+                                        np.arange(0,360,0.50),
+                                        np.arange(90,-90.25,-0.25),
+                                        np.arange(0,360,0.25)
+                                        )
             # Write the data to the formatted GRIB file using the template
             formatted_pressure_output.write(data_array, template=template)
 
@@ -268,6 +302,7 @@ class GefsInput(RequestBasedInput):
         return formatted_pressure_grib
 
     def sfc_load_source(self, **kwargs):
+        interp = bool(int(kwargs['grid'][0]))
         member = str(self.kwargs['member'][0]).zfill(2)
         if member=='00':
             member = 'c00'
@@ -328,7 +363,8 @@ class GefsInput(RequestBasedInput):
             parameter_name = grib_message['shortName']
             surface_level = grib_message['level']
             template = grib_message
-
+            if interp:
+                template = set_eccodes(template)
             # Set the date and time for the GRIB template
             eccodes.codes_set(template.handle._handle, "date", int(kwargs['date']))
             eccodes.codes_set(
@@ -345,17 +381,32 @@ class GefsInput(RequestBasedInput):
                 # Select mean sea level pressure data
                 mean_sea_level_pressure_data = gefs_surface_data.sel(param="prmsl")
                 data_array = mean_sea_level_pressure_data[0].to_numpy()
-                data_array = gefs_interpolate(data_array)
             elif parameter_name == "tcwv":
                 # Select total column water vapor data
                 total_column_water_vapor_data = gefs_surface_data.sel(param="pwat")
                 data_array = total_column_water_vapor_data[0].to_numpy()
-                data_array = gefs_interpolate(data_array)
             else:
                 # Select other parameters' data
                 parameter_data = gefs_surface_data.sel(param=parameter_name)
                 data_array = parameter_data[0].to_numpy()
-                data_array = gefs_interpolate(data_array)
+
+            if interp:
+                data_array = interpolate(
+                                        data_array,
+                                        np.arange(90,-90.50,-0.50),
+                                        np.arange(0,360,0.50),
+                                        np.arange(90,-91,-1),
+                                        np.arange(0,360,1)
+                                        )
+            else:
+                data_array = interpolate(
+                                        data_array,
+                                        np.arange(90,-90.50,-0.50),
+                                        np.arange(0,360,0.50),
+                                        np.arange(90,-90.25,-0.25),
+                                        np.arange(0,360,0.25)
+                                        )
+
             # Write the data to the formatted GRIB file using the template
             formatted_surface_output.write(data_array, template=template)
 
@@ -370,7 +421,7 @@ class GdasInput(RequestBasedInput):
     WHERE = "GDAS"
 
     def pl_load_source(self, **kwargs):
-
+        interp = bool(int(kwargs['grid'][0]))
         # Load the sample pressure GRIB file
         # Use a named temp file to ensure it persists
         temp_path = os.path.join(tempfile.gettempdir(), "sample_pres.grib")
@@ -414,7 +465,8 @@ class GdasInput(RequestBasedInput):
             parameter_name = grib_message['shortName']
             pressure_level = grib_message['level']
             template = grib_message
-
+            if interp:
+                template = set_eccodes(template)
             # Set the date and time for the GRIB template
             eccodes.codes_set(template.handle._handle, "date", int(kwargs['date']))
             eccodes.codes_set(
@@ -434,6 +486,14 @@ class GdasInput(RequestBasedInput):
                 )
                 data_array = parameter_data[0].to_numpy()
 
+            if interp:
+                data_array = interpolate(
+                                        data_array,
+                                        np.arange(90,-90.25,-0.25),
+                                        np.arange(0,360,0.25),
+                                        np.arange(90,-91,-1),
+                                        np.arange(0,360,1)
+                                        )
             # Write the data to the formatted GRIB file using the template
             formatted_pressure_output.write(data_array, template=template)
 
@@ -442,7 +502,7 @@ class GdasInput(RequestBasedInput):
         return formatted_pressure_grib
 
     def sfc_load_source(self, **kwargs):
-
+        interp = bool(int(kwargs['grid'][0]))
         # Use a named temp file to ensure it persists
         temp_path = os.path.join(tempfile.gettempdir(), "sample_sfc.grib")
         sample_url = "https://noaa-oar-mlwp-data.s3.amazonaws.com/sample_files/sample_sfc.grib"
@@ -484,7 +544,8 @@ class GdasInput(RequestBasedInput):
             parameter_name = grib_message['shortName']
             surface_level = grib_message['level']
             template = grib_message
-
+            if interp:
+                template = set_eccodes(template)
             # Set the date and time for the GRIB template
             eccodes.codes_set(template.handle._handle, "date", int(kwargs['date']))
             eccodes.codes_set(
@@ -510,6 +571,14 @@ class GdasInput(RequestBasedInput):
                 parameter_data = gdas_surface_data.sel(param=parameter_name)
                 data_array = parameter_data[0].to_numpy()
 
+            if interp:
+                data_array = interpolate(
+                                        data_array,
+                                        np.arange(90,-90.25,-0.25),
+                                        np.arange(0,360,0.25),
+                                        np.arange(90,-91,-1),
+                                        np.arange(0,360,1)
+                                        )
             # Write the data to the formatted GRIB file using the template
             formatted_surface_output.write(data_array, template=template)
 
@@ -520,15 +589,27 @@ class GdasInput(RequestBasedInput):
     def ml_load_source(self, **kwargs):
         raise NotImplementedError("CDS does not support model levels")
 
-def gefs_interpolate(data):
-    hlats = np.arange(90,-90.50,-0.50)
-    hlons = np.arange(0,360,0.50)
-    hlons_extended = np.concatenate(([hlons[-1] - 360], hlons, [hlons[0] + 360]))
+def interpolate(data,inlats,inlons,outlats,outlons):
+    inlons_extended = np.concatenate(([inlons[-1] - 360], inlons, [inlons[0] + 360]))
     data_extended = np.concatenate((data[:, -1:], data, data[:, :1]), axis=1)
-    interpolator = RegularGridInterpolator((hlats, hlons_extended), data_extended, bounds_error=False)
-    qlats = np.arange(90,-90.25,-0.25)
-    qlons = np.arange(0,360,0.25)
-    qlon_grid,qlat_grid = np.meshgrid(qlons,qlats)
-    points = np.array([qlat_grid.flatten(),qlon_grid.flatten()]).T
-    data_interpolated = interpolator(points).reshape(qlat_grid.shape)
+    interpolator = RegularGridInterpolator((inlats, inlons_extended), data_extended, bounds_error=False)
+    outlon_grid,outlat_grid = np.meshgrid(outlons,outlats)
+    points = np.array([outlat_grid.flatten(),outlon_grid.flatten()]).T
+    data_interpolated = interpolator(points).reshape(outlat_grid.shape)
     return data_interpolated
+
+def set_eccodes(template):
+    grib_handle = template.handle._handle
+    eccodes.codes_set(grib_handle, "Ni", 360)  # Longitude points
+    eccodes.codes_set(grib_handle, "Nj", 181)  # Latitude points
+
+    # Set correct grid spacing for 1-degree resolution
+    eccodes.codes_set(grib_handle, "iDirectionIncrementInDegrees", 1.0)
+    eccodes.codes_set(grib_handle, "jDirectionIncrementInDegrees", 1.0)
+
+    # Define latitude/longitude bounds
+    eccodes.codes_set(grib_handle, "latitudeOfFirstGridPointInDegrees", 90)
+    eccodes.codes_set(grib_handle, "longitudeOfFirstGridPointInDegrees", 0)
+    eccodes.codes_set(grib_handle, "latitudeOfLastGridPointInDegrees", -90)
+    eccodes.codes_set(grib_handle, "longitudeOfLastGridPointInDegrees", 359)
+    return template
