@@ -65,8 +65,6 @@ class GfsInput(RequestBasedInput):
             parameter_name = grib_message['shortName']
             pressure_level = grib_message['level']
             template = grib_message
-            if interp:
-                template = set_eccodes(template)
             # Set the date and time for the GRIB template
             eccodes.codes_set(template.handle._handle, "date", int(kwargs['date']))
             eccodes.codes_set(
@@ -93,6 +91,9 @@ class GfsInput(RequestBasedInput):
                                         np.arange(90,-91,-1),
                                         np.arange(0,360,1)
                                         )
+            if interp:
+                print("interping")
+                template = set_eccodes(template)
             # Write the data to the formatted GRIB file using the template
             formatted_pressure_output.write(data_array, template=template)
 
@@ -146,8 +147,7 @@ class GfsInput(RequestBasedInput):
             parameter_name = grib_message['shortName']
             surface_level = grib_message['level']
             template = grib_message
-            if interp:
-                template = set_eccodes(template)
+
             # Set the date and time for the GRIB template
             eccodes.codes_set(template.handle._handle, "date", int(kwargs['date']))
             eccodes.codes_set(
@@ -179,6 +179,8 @@ class GfsInput(RequestBasedInput):
                                         np.arange(90,-91,-1),
                                         np.arange(0,360,1)
                                         )
+            if interp:
+                template = set_eccodes(template)            
             # Write the data to the formatted GRIB file using the template
             formatted_surface_output.write(data_array, template=template)
 
@@ -257,8 +259,6 @@ class GefsInput(RequestBasedInput):
             parameter_name = grib_message['shortName']
             pressure_level = grib_message['level']
             template = grib_message
-            if interp:
-                template = set_eccodes(template)
             # Set the date and time for the GRIB template
             eccodes.codes_set(template.handle._handle, "date", int(kwargs['date']))
             eccodes.codes_set(
@@ -295,6 +295,8 @@ class GefsInput(RequestBasedInput):
                                         np.arange(0,360,0.25)
                                         )
             # Write the data to the formatted GRIB file using the template
+            if interp:
+                template = set_eccodes(template)
             formatted_pressure_output.write(data_array, template=template)
 
         # Load the formatted GRIB file and return it
@@ -363,8 +365,7 @@ class GefsInput(RequestBasedInput):
             parameter_name = grib_message['shortName']
             surface_level = grib_message['level']
             template = grib_message
-            if interp:
-                template = set_eccodes(template)
+
             # Set the date and time for the GRIB template
             eccodes.codes_set(template.handle._handle, "date", int(kwargs['date']))
             eccodes.codes_set(
@@ -408,6 +409,8 @@ class GefsInput(RequestBasedInput):
                                         )
 
             # Write the data to the formatted GRIB file using the template
+            if interp:
+                template = set_eccodes(template)
             formatted_surface_output.write(data_array, template=template)
 
         # Load the formatted GRIB file and return it
@@ -465,8 +468,7 @@ class GdasInput(RequestBasedInput):
             parameter_name = grib_message['shortName']
             pressure_level = grib_message['level']
             template = grib_message
-            if interp:
-                template = set_eccodes(template)
+
             # Set the date and time for the GRIB template
             eccodes.codes_set(template.handle._handle, "date", int(kwargs['date']))
             eccodes.codes_set(
@@ -495,6 +497,8 @@ class GdasInput(RequestBasedInput):
                                         np.arange(0,360,1)
                                         )
             # Write the data to the formatted GRIB file using the template
+            if interp:
+                template = set_eccodes(template)
             formatted_pressure_output.write(data_array, template=template)
 
         # Load the formatted GRIB file and return it
@@ -544,8 +548,7 @@ class GdasInput(RequestBasedInput):
             parameter_name = grib_message['shortName']
             surface_level = grib_message['level']
             template = grib_message
-            if interp:
-                template = set_eccodes(template)
+
             # Set the date and time for the GRIB template
             eccodes.codes_set(template.handle._handle, "date", int(kwargs['date']))
             eccodes.codes_set(
@@ -580,6 +583,8 @@ class GdasInput(RequestBasedInput):
                                         np.arange(0,360,1)
                                         )
             # Write the data to the formatted GRIB file using the template
+            if interp:
+                template = set_eccodes(template)
             formatted_surface_output.write(data_array, template=template)
 
         # Load the formatted GRIB file and return it
