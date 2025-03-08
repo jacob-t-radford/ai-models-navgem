@@ -374,38 +374,87 @@ class GefsInput(RequestBasedInput):
             if parameter_name == "tp":
                 # For total precipitation, create an array of zeros
                 data_array = np.zeros((721, 1440))
+                if interp:
+                    data_array = interpolate(
+                                            data_array,
+                                            np.arange(90,-90.25,-0.25),
+                                            np.arange(0,360,0.25),
+                                            np.arange(90,-91,-1),
+                                            np.arange(0,360,1)
+                                            )
             elif parameter_name in ["z", "lsm"]:
                 # For geopotential height and land-sea mask, use the data directly
                 data_array = grib_message.to_numpy()
+                if interp:
+                    data_array = interpolate(
+                                            data_array,
+                                            np.arange(90,-90.25,-0.25),
+                                            np.arange(0,360,0.25),
+                                            np.arange(90,-91,-1),
+                                            np.arange(0,360,1)
+                                            )
             elif parameter_name == "msl":
                 # Select mean sea level pressure data
                 mean_sea_level_pressure_data = gefs_surface_data.sel(param="prmsl")
                 data_array = mean_sea_level_pressure_data[0].to_numpy()
+                if interp:
+                    data_array = interpolate(
+                                            data_array,
+                                            np.arange(90,-90.50,-0.50),
+                                            np.arange(0,360,0.50),
+                                            np.arange(90,-91,-1),
+                                            np.arange(0,360,1)
+                                            )
+                else:
+                    data_array = interpolate(
+                                            data_array,
+                                            np.arange(90,-90.50,-0.50),
+                                            np.arange(0,360,0.50),
+                                            np.arange(90,-90.25,-0.25),
+                                            np.arange(0,360,0.25)
+                                            )
             elif parameter_name == "tcwv":
                 # Select total column water vapor data
                 total_column_water_vapor_data = gefs_surface_data.sel(param="pwat")
                 data_array = total_column_water_vapor_data[0].to_numpy()
+                if interp:
+                    data_array = interpolate(
+                                            data_array,
+                                            np.arange(90,-90.50,-0.50),
+                                            np.arange(0,360,0.50),
+                                            np.arange(90,-91,-1),
+                                            np.arange(0,360,1)
+                                            )
+                else:
+                    data_array = interpolate(
+                                            data_array,
+                                            np.arange(90,-90.50,-0.50),
+                                            np.arange(0,360,0.50),
+                                            np.arange(90,-90.25,-0.25),
+                                            np.arange(0,360,0.25)
+                                            )
             else:
                 # Select other parameters' data
                 parameter_data = gefs_surface_data.sel(param=parameter_name)
                 data_array = parameter_data[0].to_numpy()
+                if interp:
+                    data_array = interpolate(
+                                            data_array,
+                                            np.arange(90,-90.50,-0.50),
+                                            np.arange(0,360,0.50),
+                                            np.arange(90,-91,-1),
+                                            np.arange(0,360,1)
+                                            )
+                else:
+                    data_array = interpolate(
+                                            data_array,
+                                            np.arange(90,-90.50,-0.50),
+                                            np.arange(0,360,0.50),
+                                            np.arange(90,-90.25,-0.25),
+                                            np.arange(0,360,0.25)
+                                            )
 
-            if interp:
-                data_array = interpolate(
-                                        data_array,
-                                        np.arange(90,-90.50,-0.50),
-                                        np.arange(0,360,0.50),
-                                        np.arange(90,-91,-1),
-                                        np.arange(0,360,1)
-                                        )
-            else:
-                data_array = interpolate(
-                                        data_array,
-                                        np.arange(90,-90.50,-0.50),
-                                        np.arange(0,360,0.50),
-                                        np.arange(90,-90.25,-0.25),
-                                        np.arange(0,360,0.25)
-                                        )
+
 
             # Write the data to the formatted GRIB file using the template
             if interp:
