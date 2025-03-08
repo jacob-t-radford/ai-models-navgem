@@ -92,7 +92,6 @@ class GfsInput(RequestBasedInput):
                                         np.arange(0,360,1)
                                         )
             if interp:
-                print("interping")
                 template = set_eccodes(template)
             # Write the data to the formatted GRIB file using the template
             formatted_pressure_output.write(data_array, template=template)
