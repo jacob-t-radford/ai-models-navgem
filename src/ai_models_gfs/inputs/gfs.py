@@ -25,7 +25,7 @@ class GfsInput(RequestBasedInput):
         interp = bool(int(kwargs['grid'][0]))
         # Use a named temp file to ensure it persists
         temp_path = os.path.join(tempfile.gettempdir(), "sample_pres.grib")
-        sample_url = "https://noaa-oar-mlwp-data.s3.amazonaws.com/sample_files/sample_pres.grib"
+        sample_url = "https://noaa-oar-mlwp-data.s3.amazonaws.com/colab_resources/sample_pres.grib"
 
         # Check if the file already exists before downloading
         if not os.path.exists(temp_path):
@@ -105,7 +105,7 @@ class GfsInput(RequestBasedInput):
 
         # Use a named temp file to ensure it persists
         temp_path = os.path.join(tempfile.gettempdir(), "sample_sfc.grib")
-        sample_url = "https://noaa-oar-mlwp-data.s3.amazonaws.com/sample_files/sample_sfc.grib"
+        sample_url = "https://noaa-oar-mlwp-data.s3.amazonaws.com/colab_resources/sample_sfc.grib"
 
         # Check if the file already exists before downloading
         if not os.path.exists(temp_path):
@@ -207,7 +207,7 @@ class GefsInput(RequestBasedInput):
 
         # Use a named temp file to ensure it persists
         temp_path = os.path.join(tempfile.gettempdir(), "sample_pres.grib")
-        sample_url = "https://noaa-oar-mlwp-data.s3.amazonaws.com/sample_files/sample_pres.grib"
+        sample_url = "https://noaa-oar-mlwp-data.s3.amazonaws.com/colab_resources/sample_pres.grib"
 
         # Check if the file already exists before downloading
         if not os.path.exists(temp_path):
@@ -312,7 +312,7 @@ class GefsInput(RequestBasedInput):
 
         # Use a named temp file to ensure it persists
         temp_path = os.path.join(tempfile.gettempdir(), "sample_sfc.grib")
-        sample_url = "https://noaa-oar-mlwp-data.s3.amazonaws.com/sample_files/sample_sfc.grib"
+        sample_url = "https://noaa-oar-mlwp-data.s3.amazonaws.com/colab_resources/sample_sfc.grib"
 
         # Check if the file already exists before downloading
         if not os.path.exists(temp_path):
@@ -476,7 +476,7 @@ class GdasInput(RequestBasedInput):
         # Load the sample pressure GRIB file
         # Use a named temp file to ensure it persists
         temp_path = os.path.join(tempfile.gettempdir(), "sample_pres.grib")
-        sample_url = "https://noaa-oar-mlwp-data.s3.amazonaws.com/sample_files/sample_pres.grib"
+        sample_url = "https://noaa-oar-mlwp-data.s3.amazonaws.com/colab_resources/sample_pres.grib"
 
         # Check if the file already exists before downloading
         if not os.path.exists(temp_path):
@@ -557,7 +557,7 @@ class GdasInput(RequestBasedInput):
         interp = bool(int(kwargs['grid'][0]))
         # Use a named temp file to ensure it persists
         temp_path = os.path.join(tempfile.gettempdir(), "sample_sfc.grib")
-        sample_url = "https://noaa-oar-mlwp-data.s3.amazonaws.com/sample_files/sample_sfc.grib"
+        sample_url = "https://noaa-oar-mlwp-data.s3.amazonaws.com/colab_resources/sample_sfc.grib"
 
         # Check if the file already exists before downloading
         if not os.path.exists(temp_path):
