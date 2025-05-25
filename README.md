@@ -29,6 +29,8 @@ git clone https://github.com/jacob-t-radford/ai-models-aurora-navgem.git
 
 conda create --name ai-models-navgem python==3.11  
 
+conda activate ai-models-navgem  
+
 cd ai-models-navgem  
 pip install -e .  
 
