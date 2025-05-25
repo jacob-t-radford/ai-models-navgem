@@ -8,6 +8,8 @@ The key additions over the standard `ai-models` package is a navgem.py file in .
 
 **I could not locate some NAVGEM data required to run some models. Namely, "tcwv","100u","100v" are filled with zeros to make things work for now. The land-sea mask and geopotential at the surface (orography) are filled in with ERA5 sample data (they are static fields).** 
 
+![Required Variables](screenshot.png)
+
 ## Usage
 
 Most functionality is the same as the original [`ai-models`](https://github.com/ecmwf-lab/ai-models) package and we refer the user there for most options. Replace the --input argument with navgem. The 0.50 deg NAVGEM conditions are bi-linearly interpolated to a 0.25 deg grid under the hood.
