@@ -1,9 +1,16 @@
 import requests
 from bs4 import BeautifulSoup
 import os
+import sys
+import subprocess as sp
 
-base_url = "https://usgodae.org/pub/outgoing/fnmoc/models/navgem_0.5/2025/2025050518/"
-outdir = "navgem_data"
+year=sys.argv[1]
+month=sys.argv[2]
+day=sys.argv[3]
+hh=sys.argv[4]
+
+base_url = f"https://usgodae.org/pub/outgoing/fnmoc/models/navgem_0.5/{year}/{year}{month}{day}{hh}/"
+outdir = f"navgem_data/{year}{month}{day}{hh}/"
 os.makedirs(outdir, exist_ok=True)
 
 resp = requests.get(base_url)
@@ -17,3 +24,5 @@ for link in soup.find_all("a"):
             r = requests.get(file_url)
             with open(os.path.join(outdir, href), "wb") as f:
                 f.write(r.content)
+
+sp.call(f"cat navgem_data/{year}{month}{day}{hh}/* > navgem_data/{year}{month}{day}{hh}/merged",shell=True)
