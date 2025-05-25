@@ -34,16 +34,16 @@ conda activate ai-models-navgem
 cd ai-models-navgem  
 pip install -e .  
 
-cd ai-models-fourcastnetv2-navgem  
+cd ../ai-models-fourcastnetv2-navgem  
 pip install -e .  
 
-cd ai-models-panguweather-navgem  
+cd ../ai-models-panguweather-navgem  
 pip install -e .  
 
-cd ai-models-graphcast-navgem  
+cd ../ai-models-graphcast-navgem  
 pip install -e .  
 
-cd ai-models-aurora-navgem  
+cd ../ai-models-aurora-navgem  
 pip install -e .  
 
 pip install git+https://github.com/deepmind/graphcast.git  
@@ -51,6 +51,8 @@ pip install jax[cuda12]==0.5.3
 pip install dm-haiku==0.0.13  
 pip install metpy  
 pip install beautifulsoup4  
+
+cd ../ai-models-navgem  
 
 aws s3 cp --recursive --no-sign-request s3://noaa-oar-mlwp-data/colab_resources/fcnv2 ./ai-models-navgem/fcnv2/  
 aws s3 cp --recursive --no-sign-request s3://noaa-oar-mlwp-data/colab_resources/pw ./ai-models-navgem/pw/  
