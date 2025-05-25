@@ -1,10 +1,10 @@
-# ai-models-gfs
+# ai-models-navgem
 
-This package is based on ECMWF's ai-models package, adding options to retrieve GFS, GEFS, and GDAS data for model initialization. Use the command `ai-models-gfs` to run AI-based weather forecasting models in place of the standard `ai-models` demonstrated in ECMWF's directions below. These models need to be installed independently.
+This package is based on ECMWF's ai-models package, adding an option to initialize with NAVGEM data. Use the command `ai-models-navgem` to run AI-based weather forecasting models in place of the standard `ai-models` demonstrated in ECMWF's directions below. These models need to be installed independently.
 
 ## Usage
 
-Most functionality is the same as the original `ai-models` package. Replace the --input argument with gfs, gefs, or gdas. If using gefs, add an additional --member argument (single integer from 0 to 30) to run with the corresponding GEFS member (0=control). The 0.50 deg GEFS conditions are bi-linearly interpolated to a 0.25 deg grid under the hood.
+Most functionality is the same as the original `ai-models` package. Replace the --input argument with navgem. The 0.50 deg NAVGEM conditions are bi-linearly interpolated to a 0.25 deg grid under the hood.
 
 # ai-models
 
