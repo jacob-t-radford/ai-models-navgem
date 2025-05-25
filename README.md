@@ -58,8 +58,8 @@ aws s3 cp --recursive --no-sign-request s3://noaa-oar-mlwp-data/colab_resources/
 aws s3 cp --recursive --no-sign-request s3://noaa-oar-mlwp-data/colab_resources/pw ./pw/  
 aws s3 cp --recursive --no-sign-request s3://noaa-oar-mlwp-data/colab_resources/gc ./gc/  
 aws s3 cp --recursive --no-sign-request s3://noaa-oar-mlwp-data/colab_resources/au ./au/  
-aws s3 cp --no-sign-request s3://noaa-oar-mlwp-data/colab_resources/sample_pres.grib ./src/ai_models_navgem/inputs/  
-aws s3 cp --no-sign-request s3://noaa-oar-mlwp-data/colab_resources/sample_sfc.grib ./src/ai_models_navgem/inputs/  
+aws s3 cp --no-sign-request s3://noaa-oar-mlwp-data/colab_resources/sample_pres.grib .
+aws s3 cp --no-sign-request s3://noaa-oar-mlwp-data/colab_resources/sample_sfc.grib .
 
 python dl.py 2025 05 06 00  
 python dl.py 2025 05 05 18 (Need previous initialization for GraphCast)  
