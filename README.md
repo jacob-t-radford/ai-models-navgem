@@ -8,6 +8,7 @@ The key additions over the standard `ai-models` package is a navgem.py file in .
 
 **I could not locate some NAVGEM data required to run some models. Namely, "tcwv","100u","100v" are filled with zeros to make things work for now. The land-sea mask and geopotential at the surface (orography) are filled in with ERA5 sample data (they are static fields).** 
 
+Required variables:
 ![Required Variables](screenshot.png)
 
 ## Usage
