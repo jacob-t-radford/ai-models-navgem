@@ -14,7 +14,7 @@ requires = ["setuptools>=60", "setuptools-scm>=8.0"]
 
 [project]
 description = "A package to run AI weather models."
-name = "ai-models-gfs"
+name = "ai-models-navgem"
 version = "0.0.21"
 license = { file = "LICENSE" }
 requires-python = ">=3.9"
@@ -62,22 +62,26 @@ dependencies = [
 
 [project.urls]
 Homepage = "https://github.com/ecmwf-lab/ai-models"
-Repository = "https://github.com/jacob-radford/ai-models-gfs"
-Issues = "https://github.com/jacob-radford/ai-models-gfs/issues"
+Repository = "https://github.com/jacob-t-radford/ai-models-navgem"
+Issues = "https://github.com/jacob-t-radford/ai-models-navgem/issues"
 
 [project.scripts]
-ai-models-gfs = "ai_models_gfs.__main__:main"
+ai-models-navgem = "ai_models_navgem.__main__:main"
 
-[project.entry-points."ai_models_gfs.input"]
-file = "ai_models_gfs.inputs.file:FileInput"
-mars = "ai_models_gfs.inputs.mars:MarsInput"
-cds = "ai_models_gfs.inputs.cds:CdsInput"
-gfs = "ai_models_gfs.inputs.gfs:GfsInput"
-gefs = "ai_models_gfs.inputs.gfs:GefsInput"
-gdas = "ai_models_gfs.inputs.gfs:GdasInput"
-ecmwf-open-data = "ai_models_gfs.inputs.opendata:OpenDataInput"
-opendata = "ai_models_gfs.inputs.opendata:OpenDataInput"
+[project.entry-points."ai_models_navgem.input"]
+file = "ai_models_navgem.inputs.file:FileInput"
+mars = "ai_models_navgem.inputs.mars:MarsInput"
+cds = "ai_models_navgem.inputs.cds:CdsInput"
+gfs = "ai_models_navgem.inputs.gfs:GfsInput"
+gefs = "ai_models_navgem.inputs.gfs:GefsInput"
+gdas = "ai_models_navgem.inputs.gfs:GdasInput"
+navgem = "ai_models_navgem.inputs.navgem:NavgemInput"
+ecmwf-open-data = "ai_models_navgem.inputs.opendata:OpenDataInput"
+opendata = "ai_models_navgem.inputs.opendata:OpenDataInput"
 
-[project.entry-points."ai_models_gfs.output"]
-file = "ai_models_gfs.outputs:FileOutput"
-none = "ai_models_gfs.outputs:NoneOutput"
+[project.entry-points."ai_models_navgem.output"]
+file = "ai_models_navgem.outputs:FileOutput"
+none = "ai_models_navgem.outputs:NoneOutput"
+
+[tool.setuptools_scm]
+write_to = "src/ai_models_navgem/_version.py"

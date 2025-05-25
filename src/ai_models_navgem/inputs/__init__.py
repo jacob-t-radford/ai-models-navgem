@@ -9,31 +9,11 @@ import logging
 from functools import cached_property
 
 import earthkit.data as ekd
+import earthkit.regrid as ekr
 import entrypoints
+from earthkit.data.indexing.fieldlist import FieldArray
 
 LOG = logging.getLogger(__name__)
-
-
-class FileInput:
-    def __init__(self, owner, file, **kwargs):
-        self.file = file
-        self.owner = owner
-
-    @cached_property
-    def fields_sfc(self):
-        return self.all_fields.sel(levtype="sfc")
-
-    @cached_property
-    def fields_pl(self):
-        return self.all_fields.sel(levtype="pl")
-
-    @cached_property
-    def fields_ml(self):
-        return self.all_fields.sel(levtype="ml")
-
-    @cached_property
-    def all_fields(self):
-        return ekd.from_source("file", self.file)
 
 
 def get_input(name, *args, **kwargs):
@@ -42,6 +22,6 @@ def get_input(name, *args, **kwargs):
 
 def available_inputs():
     result = {}
-    for e in entrypoints.get_group_all("ai_models_gfs.input"):
+    for e in entrypoints.get_group_all("ai_models_navgem.input"):
         result[e.name] = e
     return result

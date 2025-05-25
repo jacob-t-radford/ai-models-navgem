@@ -128,7 +128,7 @@ class OpenDataInput(RequestBasedInput):
                 " not available in ECMWF open data, using constants.grib2 instead"
             )
 
-        cachedir = os.path.expanduser("~/.cache/ai-models-gfs")
+        cachedir = os.path.expanduser("~/.cache/ai-models-navgem")
         constants_url = CONSTANTS_URL.format(resol=request["resol"])
         basename = os.path.basename(constants_url)
 

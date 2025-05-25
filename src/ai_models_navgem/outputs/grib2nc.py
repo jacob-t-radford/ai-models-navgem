@@ -32,7 +32,7 @@ def grib2nc(model,path,lead,step,date,time,inputmodel):
             ,"w": ['Vertical velocity','Pa s-1']
             }
 
-    ec2gfsmap = {
+    ec2navgemmap = {
             "u":"u"
             ,"v":"v"
             ,"w":"w"
@@ -82,13 +82,13 @@ def grib2nc(model,path,lead,step,date,time,inputmodel):
         levelmap[level] = c
     grib.seek(0)
     for pl_var in unique_pl_vars:
-        modelvar = ec2gfsmap[pl_var]
+        modelvar = ec2navgemmap[pl_var]
         ncdata[modelvar] = {
             'values': np.zeros((lead // step + 1, len(levels), y_shape, x_shape)).astype('float32'),
             'name': varmap[modelvar][0], 'units': varmap[modelvar][1]
         }
     for sfc_var in unique_sfc_vars:
-        modelvar = ec2gfsmap[sfc_var]
+        modelvar = ec2navgemmap[sfc_var]
         ncdata[modelvar] = {
             'values': np.zeros((lead // step + 1, y_shape, x_shape)).astype('float32'),
             'name': varmap[modelvar][0], 'units': varmap[modelvar][1]
@@ -100,15 +100,15 @@ def grib2nc(model,path,lead,step,date,time,inputmodel):
         timestep = int(grb.step/step)
         level = grb.level
         levelType = grb.levelType
-        if (shortName=='z' and levelType=='sfc') or shortName not in ec2gfsmap.keys():
+        if (shortName=='z' and levelType=='sfc') or shortName not in ec2navgemmap.keys():
             continue
-        gfsequivalent = ec2gfsmap[shortName]
+        navgemequivalent = ec2navgemmap[shortName]
         vals = grb.values
         if levelType=='pl':
             levelind = levelmap[level]
-            ncdata[gfsequivalent]['values'][timestep, levelind, :, :] = vals
+            ncdata[navgemequivalent]['values'][timestep, levelind, :, :] = vals
         elif levelType=='sfc':
-            ncdata[gfsequivalent]['values'][timestep, :, :] = vals
+            ncdata[navgemequivalent]['values'][timestep, :, :] = vals
 
     f = DS(out, 'w', format='NETCDF4')
     f.createDimension('time', lead//step + 1)
@@ -157,8 +157,8 @@ def grib2nc(model,path,lead,step,date,time,inputmodel):
         else:
             chunksizes = (1,y_shape,x_shape)
         create_variable(
-            f, variable, dims, ncdata[ec2gfsmap[variable]]['values'], {
-                'long_name': ncdata[ec2gfsmap[variable]]['name'], 'units': ncdata[ec2gfsmap[variable]]['units']
+            f, variable, dims, ncdata[ec2navgemmap[variable]]['values'], {
+                'long_name': ncdata[ec2navgemmap[variable]]['name'], 'units': ncdata[ec2navgemmap[variable]]['units']
             },
             chunksizes
         )

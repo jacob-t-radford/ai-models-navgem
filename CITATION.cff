@@ -36,16 +36,16 @@ keywords:
   - weather forecasting
 license: Apache-2.0
 
-title: ai-models-gfs
+title: ai-models-navgem
 type: software
 authors:
   - given-names: Jacob	
     family-names: Radford
     affiliation: CIRA
-repository-code: 'https://github.com/jacob-t-radford/ai-models-gfs'
+repository-code: 'https://github.com/jacob-t-radford/ai-models-navgem'
 abstract: >-
-  ai-models-gfs is used to run AI-based weather forecasting
-  models with GFS family initial conditions.
+  ai-models-navgem is used to run AI-based weather forecasting
+  models with NAVGEM family initial conditions.
   These models need to be installed independently.
 keywords:
   - ai
