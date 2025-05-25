@@ -18,10 +18,10 @@ class NavgemInput(RequestBasedInput):
         time = str(kwargs['time']).zfill(2)
 
         #Open template pressure level file from ERA5
-        template_pres = ekd.from_source("file", "/jradford/ai-models/src/ai_models/inputs/sample_pres.grib")
+        template_pres = ekd.from_source("file", "ai-models-navgem/src/ai_models_navgem/inputs/sample_pres.grib")
 
         #Open NAVGEM data file
-        navgem_data = ekd.from_source("file",f"/jradford/navgem_data/navgem_data/{date}{time}/merged")
+        navgem_data = ekd.from_source("file",f"ai-models-navgem/navgem_data/{date}{time}/merged")
 
         #Extract relevant pressure level variables from NAVGEM data
         pl_vars = ['t','u','v','gh','w','r','depr']
@@ -124,10 +124,10 @@ class NavgemInput(RequestBasedInput):
         time = str(kwargs['time']).zfill(2)
         
         #Open template pressure level file from ERA5
-        template_sfc = ekd.from_source("file", "/jradford/ai-models/src/ai_models/inputs/sample_sfc.grib")
+        template_sfc = ekd.from_source("file", "ai-models-navgem/src/ai_models_navgem/inputs/sample_sfc.grib")
 
         #Open NAVGEM data file
-        navgem_data = ekd.from_source("file",f"/jradford/navgem_data/navgem_data/{date}{time}/merged")
+        navgem_data = ekd.from_source("file",f"ai-models-navgem/navgem_data/{date}{time}/merged")
 
         #Extract relevant surface data from NAVGEM data
         sfc_vars = ['2t','msl','10u','10v','100u','100v','pwat','sp','tcwv']
