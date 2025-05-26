@@ -6,7 +6,7 @@ This package is based on ECMWF's ai-models package, adding an option to initiali
 
 The key additions over the standard `ai-models` package is a navgem.py file in ./ai-models-navgem/src/ai_models_navgem/inputs/ which helps to properly formats pre-downloaded NAVGEM data. After this, it primarily uses the standard functionality of `ai-models` to run the models.
 
-**I could not locate some NAVGEM data required to run some models. Namely, "tcwv","100u","100v" are filled with zeros to make things work for now. The land-sea mask and geopotential at the surface (orography) are filled in with ERA5 sample data (they are static fields).** 
+**I could not locate some NAVGEM data required to run some models. Namely, "tcwv","100u","100v", and "q" (at all pressure levels) are filled with zeros to make things work for now. The land-sea mask and geopotential at the surface (orography) are filled in with ERA5 sample data (they are static fields).** 
 
 Required variables:  
 ![Required Variables](screenshot.png)
