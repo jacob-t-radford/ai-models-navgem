@@ -3,6 +3,7 @@ import earthkit.data as ekd
 import logging
 import numpy as np
 import eccodes
+import matplotlib.pyplot as plt
 from earthkit.data import FieldList
 from metpy.units import units
 from metpy.calc import specific_humidity_from_dewpoint
@@ -23,62 +24,19 @@ class NavgemInput(RequestBasedInput):
         #Open NAVGEM data file
         navgem_data = ekd.from_source("file",f"navgem_data/{date}{time}/merged")
 
-        #Extract relevant pressure level variables from NAVGEM data
-        pl_vars = ['t','u','v','gh','w','r','depr']
-        pl_levs = [1000,925,850,700,600,500,400,300,250,200,150,100,50]
-        pl_data = navgem_data.sel(levelType="pl", level=pl_levs, shortName=pl_vars)
+        #Temporary output grib file
+        formatted_pressure_file = f"navgem_data/pres_formatted_{date}_{time}"
+        formatted_pressure_output = ekd.new_grib_output(
+            formatted_pressure_file, edition=1
+        )
 
-        #Create empty field list
-        pl_data_with_q = ekd.SimpleFieldList()
-
-        #Add NAVGEM data to empty list
-        for grb in pl_data:
-            pl_data_with_q.append(grb)
-
-        #Calculate specific humidity and add to list
-        for pl_lev in pl_levs:
-
-            #Select temperature data
-            t_grb = pl_data.sel(shortName="t", level=pl_lev)
-            t_data = t_grb.to_numpy()
-
-            #Select dewpoint depression data
-            depr_grb = pl_data.sel(shortName="depr", level=pl_lev)
-            depr_data = depr_grb.to_numpy()
-
-            #Calculate dewpoint
-            td_data = t_data - depr_data
-
-            #Calculate specific humidity
-            q_data = np.array(specific_humidity_from_dewpoint(pl_lev * units.hPa, td_data * units.kelvin).to('kg/kg'))
-
-            #Get a metadata template
-            metadata_template = t_grb[0].metadata()
-
-            #Replace metadata name with q (specific humidity)
-            metadata_q = metadata_template.override(shortName="q")
-
-            #Create new message
-            q_ds = FieldList.from_array(q_data, metadata_q)[0]
-
-            #Have to clone the message to set units
-            q_ds_clone = q_ds.clone(units="kg/kg")
-
-            #Append specific humidity data to empty list
-            pl_data_with_q.append(q_ds_clone)
-
-        #Another empty field list
-        new_pl_data = ekd.SimpleFieldList()
-        for grb in pl_data_with_q:
-            print(grb)
         #Loop through template file messages
         for grb in template_pres:
 
             #Extract message name and level and create template for metadata
             parameter_name = grb['shortName']
             level = grb['level']
-            template = grb.copy()
-            metadata = template.metadata()
+            template = grb
 
             #Set the date and time of template to correct date and time
             eccodes.codes_set(template.handle._handle, "date", int(kwargs['date']))
@@ -86,36 +44,45 @@ class NavgemInput(RequestBasedInput):
                 template.handle._handle, "time", int(kwargs['time']) * 100
             )
 
+            #Handle specific humidity (missing)
+            if parameter_name == "q":
+                data_array = np.zeros((721, 1440))
+
             #For geopotential fields extract geopotential height and convert
-            if parameter_name == "z":
-                geopotential_height_data = pl_data_with_q.sel(
+            elif parameter_name == "z":
+                geopotential_height_data = navgem_data.sel(
                     param="gh", level=level
                 )
                 data_array = np.flipud(geopotential_height_data[0].to_numpy() * 9.80665)
+                #Interpolate from 0.5deg to 0.25deg
+                data_array = interpolate(
+                                        data_array,
+                                        np.arange(90,-90.50,-0.50),
+                                        np.arange(0,360,0.50),
+                                        np.arange(90,-90.25,-0.25),
+                                        np.arange(0,360,0.25)
+                                        )
 
             #Otherwise just select the relevant NAVGEM data
             else:
-                parameter_data = pl_data_with_q.sel(
+                parameter_data = navgem_data.sel(
                     param=parameter_name, level=level
                 )
                 data_array = np.flipud(parameter_data[0].to_numpy())
 
-            #Interpolate from 0.5deg to 0.25deg
-            data_array = interpolate(
-                                    data_array,
-                                    np.arange(90,-90.50,-0.50),
-                                    np.arange(0,360,0.50),
-                                    np.arange(90,-90.25,-0.25),
-                                    np.arange(0,360,0.25)
-                                    )
+                #Interpolate from 0.5deg to 0.25deg
+                data_array = interpolate(
+                                        data_array,
+                                        np.arange(90,-90.50,-0.50),
+                                        np.arange(0,360,0.50),
+                                        np.arange(90,-90.25,-0.25),
+                                        np.arange(0,360,0.25)
+                                        )
 
-            #Create field list and extract grib message (not sure if needed)
-            ds = FieldList.from_array(data_array, metadata)[0]
+            formatted_pressure_output.write(data_array, template=template)
 
-            #Append to empty field list and return
-            new_pl_data.append(ds)
-
-        return new_pl_data
+        formatted_pressure_grib = ekd.from_source("file", formatted_pressure_file)
+        return formatted_pressure_grib
 
     def sfc_load_source(self,**kwargs):
 
@@ -132,8 +99,11 @@ class NavgemInput(RequestBasedInput):
         #Extract relevant surface data from NAVGEM data
         sfc_vars = ['2t','msl','10u','10v','100u','100v','pwat','sp','tcwv']
         sfc_data = navgem_data.sel(shortName=sfc_vars)
-        #Create empty field list
-        new_sfc_data = ekd.SimpleFieldList()
+
+        formatted_surface_file = f"navgem_data/sfc_formatted_{date}_{time}"
+        formatted_surface_output = ekd.new_grib_output(
+            formatted_surface_file, edition=1
+        )
 
         #Loop through template file messages
         for grb in template_sfc:
@@ -141,7 +111,7 @@ class NavgemInput(RequestBasedInput):
             #Extract message name and level and create template for metadata
             parameter_name = grb['shortName']
             level = grb['level']
-            template = grb.copy()
+            template = grb
 
             #Set the date and time of template to correct date and time
             eccodes.codes_set(template.handle._handle, "date", int(kwargs['date']))
@@ -159,7 +129,6 @@ class NavgemInput(RequestBasedInput):
             else:
                 parameter_data = sfc_data.sel(param=parameter_name)
                 data_array = np.flipud(parameter_data[0].to_numpy())
-
                 #Interpolate from 0.5deg to 0.25deg
                 data_array = interpolate(
                                         data_array,
@@ -168,13 +137,10 @@ class NavgemInput(RequestBasedInput):
                                         np.arange(90,-90.25,-0.25),
                                         np.arange(0,360,0.25)
                                         )
-            #Create field list and extract grib message (not sure if needed)
-            ds = FieldList.from_array(data_array, template.metadata())[0]
+            formatted_surface_output.write(data_array, template=template)
 
-            #Append message to empty list and return
-            new_sfc_data.append(ds)
-
-        return new_sfc_data
+        formatted_surface_grib = ekd.from_source("file", formatted_surface_file)
+        return formatted_surface_grib
 
     def ml_load_source(self, **kwargs):
         raise NotImplementedError("CDS does not support model levels")
