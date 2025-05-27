@@ -1,6 +1,6 @@
 # ai-models-navgem
 
-This package is based on ECMWF's ai-models package, adding an option to initialize with NAVGEM data. Use the command `ai-models-navgem` to run AI-based weather forecasting models in place of the standard `ai-models` demonstrated in ECMWF's directions below. These models need to be installed independently.
+This package is based on ECMWF's `ai-models` package, adding an option to initialize with NAVGEM data. Use the command `ai-models-navgem` to run AI-based weather forecasting models in place of the standard `ai-models` demonstrated in ECMWF's directions below. These models need to be installed independently.
 
 ## Modifications
 
@@ -19,14 +19,17 @@ I've included a Python script (dl.py) that downloads sample NAVGEM data, concate
 
 Here are instructions for setting everything up and doing some test runs:
 
+```
 git clone https://github.com/jacob-t-radford/ai-models-navgem.git  
 git clone https://github.com/jacob-t-radford/ai-models-fourcastnetv2-navgem.git  
 git clone https://github.com/jacob-t-radford/ai-models-panguweather-navgem.git  
 git clone https://github.com/jacob-t-radford/ai-models-graphcast-navgem.git  
 git clone https://github.com/jacob-t-radford/ai-models-aurora-navgem.git  
+```
 
 **Install Anaconda3 if not already**
 
+```
 conda create --name ai-models-navgem python==3.11  
 
 conda activate ai-models-navgem  
@@ -63,15 +66,18 @@ aws s3 cp --no-sign-request s3://noaa-oar-mlwp-data/colab_resources/sample_sfc.g
 
 python dl.py 2025 05 06 00  
 python dl.py 2025 05 05 18 (Need previous initialization for GraphCast)  
-
+```
 
 **Replace with path to your anaconda environment**  
+
+```
 export LD_LIBRARY_PATH=.../anaconda3/envs/ai-models-navgem/lib/python3.11/site-packages/nvidia/cudnn/lib  
 
 ai-models-navgem --input navgem --date 20250506 --time 0000 --assets ./fcnv2 --path ./2025050600.grib fourcastnetv2-small  
 ai-models-navgem --input navgem --date 20250506 --time 0000 --assets ./pw --path ./2025050600.grib panguweather  
 ai-models-navgem --input navgem --date 20250506 --time 0000 --assets ./gc --path ./2025050600.grib graphcast  
 ai-models-navgem --input navgem --date 20250506 --time 0000 --assets ./au --path ./2025050600.grib aurora --model-version 0.25-finetuned  
+```
 
 ## License
 
